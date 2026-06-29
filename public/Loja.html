@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>@Rafaela Bolos</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    --rosa:    #E8536A;
+    --rosa-escuro: #C73A52;
+    --creme:   #FDF6F0;
+    --quente:  #F5A623;
+    --marrom:  #3B2314;
+    --cinza:   #6B7280;
+    --borda:   #F0E6DE;
+    --verde:   #22C55E;
+    --branco:  #FFFFFF;
+    --roxo:    #9333EA;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--creme);
+    color: var(--marrom);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--marrom);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,.25);
+    gap: 10px;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    color: var(--branco);
+    font-size: 1.3rem;
+    white-space: nowrap;
+  }
+  .logo span { color: var(--quente); }
+
+  .header-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+  .btn-wpp {
+    background: #25D366; color: #fff; border: none;
+    border-radius: 50px; padding: 9px 14px;
+    font-size: .82rem; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    text-decoration: none; transition: background .2s;
+    white-space: nowrap;
+  }
+  .btn-wpp:hover { background: #1ebe5a; }
+  .btn-wpp svg { width: 16px; height: 16px; fill: #fff; flex-shrink: 0; }
+
+  .btn-carrinho {
+    background: var(--rosa); color: #fff; border: none;
+    border-radius: 50px; padding: 9px 16px;
+    font-size: .85rem; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; gap: 7px; transition: background .2s;
+    white-space: nowrap;
+  }
+  .btn-carrinho:hover { background: var(--rosa-escuro); }
+  .badge {
+    background: var(--quente); color: var(--marrom);
+    border-radius: 50%; width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .72rem; font-weight: 700;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, var(--marrom) 0%, #5a3520 100%);
+    color: #fff; padding: 40px 24px 32px; text-align: center;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; line-height: 1.2; margin-bottom: 10px;
+  }
+  .hero h1 span { color: var(--quente); }
+  .hero p { color: rgba(255,255,255,.7); font-size: .9rem; }
+
+  .consultar-faixa {
+    margin-top: 20px;
+    background: rgba(255,255,255,.1);
+    border: 1.5px solid rgba(255,255,255,.25);
+    border-radius: 14px; padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    max-width: 420px; margin-left: auto; margin-right: auto;
+  }
+  .consultar-faixa p {
+    font-size: .82rem; color: rgba(255,255,255,.85);
+    margin: 0;
+  }
+  .consultar-faixa .row { display: flex; gap: 8px; }
+  .consultar-faixa input {
+    flex: 1; padding: 9px 12px;
+    background: rgba(255,255,255,.15);
+    border: 1.5px solid rgba(255,255,255,.3);
+    border-radius: 10px; color: #fff;
+    font-size: .88rem; outline: none;
+    font-family: 'Inter', sans-serif;
+  }
+  .consultar-faixa input::placeholder { color: rgba(255,255,255,.5); }
+  .consultar-faixa input:focus { border-color: var(--quente); }
+  .consultar-faixa button {
+    background: var(--quente); color: var(--marrom);
+    border: none; border-radius: 10px; padding: 9px 16px;
+    font-weight: 700; font-size: .85rem; cursor: pointer;
+    white-space: nowrap;
+  }
+  .consultar-faixa button:hover { background: #e09400; }
+
+  .filtros {
+    display: flex; gap: 10px;
+    padding: 18px 20px 0;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .filtros::-webkit-scrollbar { display: none; }
+  .filtro {
+    background: var(--branco); border: 2px solid var(--borda);
+    border-radius: 50px; padding: 7px 16px;
+    font-size: .82rem; font-weight: 600; cursor: pointer;
+    white-space: nowrap; transition: all .2s; color: var(--marrom);
+  }
+  .filtro.ativo, .filtro:hover {
+    background: var(--rosa); border-color: var(--rosa); color: #fff;
+  }
+
+  .secao-titulo {
+    padding: 22px 20px 4px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem; color: var(--marrom);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .secao-titulo::after {
+    content: ''; flex: 1; height: 1px; background: var(--borda);
+  }
+
+  .aviso-encomenda {
+    margin: 8px 20px 0;
+    background: #fff7ed; border: 1.5px solid #fed7aa;
+    border-radius: 10px; padding: 10px 14px;
+    font-size: .82rem; color: #92400e; line-height: 1.5;
+    display: none;
+  }
+  .aviso-encomenda.visivel { display: block; }
+
+  .produtos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 14px; padding: 12px 20px 20px;
+  }
+  .card {
+    background: var(--branco); border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(59,35,20,.08);
+    transition: transform .2s, box-shadow .2s; cursor: pointer;
+    position: relative;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(59,35,20,.15); }
+
+  .card-img {
+    width: 100%; height: 110px;
+    overflow: hidden; position: relative;
+    background: var(--creme);
+  }
+  .card-img img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform .3s;
+  }
+  .card:hover .card-img img { transform: scale(1.06); }
+  .card-img-placeholder {
+    width: 100%; height: 110px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.8rem; background: var(--creme);
+  }
+
+  .card-body { padding: 11px; }
+  .card-nome { font-weight: 600; font-size: .87rem; margin-bottom: 3px; }
+  .card-desc { font-size: .72rem; color: var(--cinza); margin-bottom: 10px; line-height: 1.4; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; }
+  .preco { font-weight: 700; font-size: .93rem; color: var(--rosa-escuro); }
+  .btn-add {
+    background: var(--rosa); color: #fff; border: none;
+    border-radius: 50%; width: 30px; height: 30px;
+    font-size: 1.2rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s; line-height: 1;
+  }
+  .btn-add:hover { background: var(--rosa-escuro); }
+
+  .tag-encomenda {
+    position: absolute; top: 8px; right: 8px;
+    background: var(--roxo); color: #fff;
+    font-size: .62rem; font-weight: 700;
+    padding: 3px 7px; border-radius: 50px;
+    text-transform: uppercase; letter-spacing: .4px; z-index: 2;
+  }
+  .tag-tamanho {
+    position: absolute; top: 8px; left: 8px;
+    background: var(--quente); color: var(--marrom);
+    font-size: .65rem; font-weight: 800;
+    padding: 3px 8px; border-radius: 50px; z-index: 2;
+  }
+  .tag-doce {
+    position: absolute; top: 8px; right: 8px;
+    background: #ec4899; color: #fff;
+    font-size: .62rem; font-weight: 700;
+    padding: 3px 7px; border-radius: 50px;
+    text-transform: uppercase; z-index: 2;
+  }
+  .tag-artesanal {
+    position: absolute; top: 8px; left: 8px;
+    background: #d97706; color: #fff;
+    font-size: .62rem; font-weight: 700;
+    padding: 3px 7px; border-radius: 50px;
+    text-transform: uppercase; letter-spacing: .4px; z-index: 2;
+  }
+  .tag-gourmet {
+    position: absolute; top: 8px; right: 8px;
+    background: var(--roxo); color: #fff;
+    font-size: .62rem; font-weight: 700;
+    padding: 3px 7px; border-radius: 50px;
+    text-transform: uppercase; letter-spacing: .4px; z-index: 2;
+  }
+
+  .overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.5);
+    z-index: 200; display: none; align-items: flex-end; justify-content: center;
+  }
+  .overlay.aberto { display: flex; }
+  .painel-carrinho {
+    background: var(--branco); border-radius: 24px 24px 0 0;
+    width: 100%; max-width: 520px; max-height: 92vh;
+    overflow-y: auto; padding: 22px;
+    animation: slideUp .3s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .painel-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 18px;
+  }
+  .painel-header h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; }
+  .btn-fechar {
+    background: var(--creme); border: none; border-radius: 50%;
+    width: 34px; height: 34px; font-size: 1rem;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+
+  .item-carrinho {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0; border-bottom: 1px solid var(--borda);
+  }
+  .item-emoji { font-size: 1.7rem; }
+  .item-info { flex: 1; }
+  .item-nome { font-weight: 600; font-size: .88rem; }
+  .item-sub { font-size: .78rem; color: var(--cinza); }
+  .ctrl-qtd { display: flex; align-items: center; gap: 7px; }
+  .ctrl-qtd button {
+    background: var(--creme); border: 1px solid var(--borda);
+    border-radius: 6px; width: 26px; height: 26px;
+    font-size: 1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ctrl-qtd span { font-weight: 600; font-size: .88rem; min-width: 16px; text-align: center; }
+  .item-preco { font-weight: 700; color: var(--rosa-escuro); font-size: .88rem; min-width: 58px; text-align: right; }
+
+  .form-pedido { margin-top: 18px; }
+  .form-pedido h3 { font-weight: 700; margin-bottom: 12px; font-size: .95rem; }
+  .campo { margin-bottom: 12px; }
+  .campo label {
+    display: block; font-size: .78rem; font-weight: 600;
+    color: var(--cinza); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .5px;
+  }
+  .campo input, .campo select, .campo textarea {
+    width: 100%; padding: 10px 13px;
+    border: 2px solid var(--borda); border-radius: 10px;
+    font-family: 'Inter', sans-serif; font-size: .88rem;
+    color: var(--marrom); background: var(--creme);
+    transition: border-color .2s; outline: none;
+  }
+  .campo input:focus, .campo select:focus, .campo textarea:focus { border-color: var(--rosa); }
+  .campo textarea { height: 68px; resize: none; }
+
+  .opcoes-entrega { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .op-entrega {
+    border: 2px solid var(--borda); border-radius: 10px;
+    padding: 11px; cursor: pointer; text-align: center;
+    transition: all .2s; background: var(--creme);
+  }
+  .op-entrega.ativo { border-color: var(--rosa); background: #fff0f3; }
+  .op-entrega .icon { font-size: 1.4rem; }
+  .op-entrega .label { font-size: .78rem; font-weight: 600; margin-top: 4px; }
+
+  .opcoes-pgto { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .op-pgto {
+    border: 2px solid var(--borda); border-radius: 10px;
+    padding: 11px; cursor: pointer; text-align: center;
+    transition: all .2s; background: var(--creme);
+  }
+  .op-pgto.ativo { border-color: var(--verde); background: #f0fff5; }
+  .op-pgto .icon { font-size: 1.4rem; }
+  .op-pgto .label { font-size: .78rem; font-weight: 600; margin-top: 4px; }
+
+  .total-box {
+    background: var(--creme); border-radius: 12px;
+    padding: 13px 15px; margin: 14px 0;
+  }
+  .total-linha {
+    display: flex; justify-content: space-between;
+    font-size: .86rem; margin-bottom: 5px; color: var(--cinza);
+  }
+  .total-linha.destaque {
+    font-size: .97rem; font-weight: 700; color: var(--marrom);
+    border-top: 1px solid var(--borda); padding-top: 8px; margin-top: 8px;
+  }
+
+  .btn-pedir {
+    width: 100%; background: var(--rosa); color: #fff;
+    border: none; border-radius: 14px; padding: 15px;
+    font-size: .97rem; font-weight: 700; cursor: pointer;
+    transition: background .2s;
+  }
+  .btn-pedir:hover { background: var(--rosa-escuro); }
+  .btn-pedir:disabled { background: #ccc; cursor: not-allowed; }
+
+  .vazio { text-align: center; padding: 36px 20px; }
+  .vazio .icon { font-size: 3rem; margin-bottom: 12px; }
+  .vazio p { color: var(--cinza); font-size: .88rem; }
+
+  .pix-info {
+    background: #f0fff5; border: 2px solid #bbf7d0;
+    border-radius: 10px; padding: 13px; margin-bottom: 12px;
+    font-size: .83rem; line-height: 1.6; display: none;
+  }
+  .pix-info.visivel { display: block; }
+  .pix-chave { font-weight: 700; color: #16a34a; }
+
+  .aviso-cart {
+    background: #fff7ed; border: 1.5px solid #fed7aa;
+    border-radius: 10px; padding: 10px 13px;
+    font-size: .81rem; color: #92400e; margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .modal-sucesso {
+    position: fixed; inset: 0; background: rgba(0,0,0,.6);
+    z-index: 300; display: none;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-sucesso.aberto { display: flex; }
+  .modal-box {
+    background: #fff; border-radius: 20px;
+    padding: 32px 24px; text-align: center;
+    max-width: 340px; width: 100%;
+    animation: popIn .3s ease;
+  }
+  @keyframes popIn { from { transform: scale(.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal-box .icon { font-size: 3.2rem; margin-bottom: 12px; }
+  .modal-box h2 { font-family: 'Playfair Display', serif; margin-bottom: 8px; }
+  .modal-box p { color: var(--cinza); font-size: .88rem; line-height: 1.5; margin-bottom: 18px; }
+  .modal-box .num-pedido {
+    background: var(--creme); border-radius: 10px;
+    padding: 10px; font-size: 1.05rem; font-weight: 700;
+    color: var(--rosa-escuro); margin-bottom: 8px;
+    cursor: pointer; user-select: all;
+  }
+  .modal-box .hint-consulta {
+    font-size: .78rem; color: var(--cinza); margin-bottom: 18px;
+  }
+  .btn-ok {
+    background: var(--rosa); color: #fff; border: none;
+    border-radius: 10px; padding: 11px 28px;
+    font-size: .92rem; font-weight: 700; cursor: pointer;
+  }
+
+  .modal-status {
+    position: fixed; inset: 0; background: rgba(0,0,0,.6);
+    z-index: 300; display: none;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-status.aberto { display: flex; }
+  .status-box {
+    background: #fff; border-radius: 20px;
+    padding: 28px 24px;
+    max-width: 380px; width: 100%;
+    animation: popIn .3s ease;
+  }
+  .status-box-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+  }
+  .status-box-header h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; }
+
+  .timeline { display: flex; flex-direction: column; gap: 0; margin-bottom: 20px; }
+  .tl-step {
+    display: flex; gap: 14px; align-items: flex-start;
+    position: relative;
+  }
+  .tl-step:not(:last-child)::after {
+    content: ''; position: absolute;
+    left: 15px; top: 32px;
+    width: 2px; height: calc(100% - 10px);
+    background: var(--borda);
+    z-index: 0;
+  }
+  .tl-step.feito::after { background: var(--rosa); }
+  .tl-dot {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .9rem; flex-shrink: 0; z-index: 1;
+    background: var(--borda); color: var(--cinza);
+    border: 2px solid var(--borda);
+  }
+  .tl-step.feito .tl-dot { background: var(--rosa); border-color: var(--rosa); color: #fff; }
+  .tl-step.atual .tl-dot {
+    background: #fff; border-color: var(--rosa); color: var(--rosa);
+    animation: pulsar 1.2s ease-in-out infinite;
+  }
+  @keyframes pulsar {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(232,83,106,.3); }
+    50% { box-shadow: 0 0 0 6px rgba(232,83,106,0); }
+  }
+  .tl-texto { padding: 6px 0 18px; }
+  .tl-titulo { font-weight: 700; font-size: .88rem; }
+  .tl-sub { font-size: .78rem; color: var(--cinza); margin-top: 2px; }
+  .tl-step.atual .tl-titulo { color: var(--rosa); }
+
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 50px;
+    font-size: .8rem; font-weight: 700;
+    margin-bottom: 18px;
+  }
+  .status-badge.pendente   { background: #fef3c7; color: #92400e; }
+  .status-badge.confirmado { background: #dbeafe; color: #1e40af; }
+  .status-badge.producao   { background: #fce7f3; color: #9d174d; }
+  .status-badge.pronto     { background: #d1fae5; color: #065f46; }
+  .status-badge.entregue   { background: #f3f4f6; color: #374151; }
+
+  .status-resumo {
+    background: var(--creme); border-radius: 12px;
+    padding: 13px; margin-bottom: 16px;
+    font-size: .83rem; line-height: 1.7;
+  }
+  .status-resumo strong { color: var(--marrom); }
+  .status-resumo .linha { display: flex; justify-content: space-between; color: var(--cinza); }
+  .status-resumo .linha span:last-child { font-weight: 600; color: var(--marrom); }
+
+  .btn-wpp-status {
+    width: 100%; background: #25D366; color: #fff;
+    border: none; border-radius: 12px; padding: 13px;
+    font-size: .9rem; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    text-decoration: none; transition: background .2s;
+    margin-top: 4px;
+  }
+  .btn-wpp-status:hover { background: #1ebe5a; }
+  .btn-wpp-status svg { width: 18px; height: 18px; fill: #fff; }
+
+  .fab-wpp {
+    position: fixed; bottom: 22px; right: 20px;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: #25D366; color: #fff; border: none;
+    box-shadow: 0 4px 16px rgba(37,211,102,.4);
+    cursor: pointer; z-index: 150;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .2s, box-shadow .2s;
+    text-decoration: none;
+  }
+  .fab-wpp:hover { transform: scale(1.1); box-shadow: 0 6px 22px rgba(37,211,102,.5); }
+  .fab-wpp svg { width: 28px; height: 28px; fill: #fff; }
+
+  .toast {
+    position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-20px);
+    background: #1a1a1a; color: #fff;
+    padding: 11px 20px; border-radius: 50px;
+    font-size: .85rem; font-weight: 500;
+    z-index: 999; opacity: 0;
+    transition: opacity .3s, transform .3s;
+    white-space: nowrap; pointer-events: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .toast.visivel { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">@<span>Rafaela</span> Bolos 🎂</div>
+  <div class="header-actions">
+    <a class="btn-wpp" href="https://wa.me/5511999999999?text=Ol%C3%A1%2C+vim+pelo+site!" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.09.534 4.092 1.475 5.84L.057 23.743a.5.5 0 0 0 .6.632l6.077-1.386A11.93 11.93 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.896 0-3.691-.507-5.251-1.394l-.375-.217-3.61.824.865-3.52-.232-.38A9.972 9.972 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+      WhatsApp
+    </a>
+    <button class="btn-carrinho" onclick="abrirCarrinho()">
+      🛒
+      <span class="badge" id="badge-count">0</span>
+    </button>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>Feito com <span>amor</span> e<br>muito sabor ✨</h1>
+  <p>Bolos, salgados, coxinhas e doces fresquinhos todo dia</p>
+
+  <div class="consultar-faixa">
+    <p>🔍 Acompanhe seu pedido em tempo real</p>
+    <div class="row">
+      <input type="text" id="inp-consulta" placeholder="Ex: PED-CF0FC7AD" />
+      <button onclick="consultarStatus()">Ver Status</button>
+    </div>
+  </div>
+</div>
+
+<div class="filtros" id="filtros">
+  <button class="filtro ativo" onclick="filtrar('todos', this)">🍽️ Tudo</button>
+  <button class="filtro" onclick="filtrar('lanche', this)">🥪 Lanches</button>
+  <button class="filtro" onclick="filtrar('artesanal', this)">🍔 Artesanais</button>
+  <button class="filtro" onclick="filtrar('salgado', this)">🥙 Salgados</button>
+  <button class="filtro" onclick="filtrar('coxinha', this)">🍗 Coxinhas</button>
+  <button class="filtro" onclick="filtrar('bolo', this)">🎂 Bolos</button>
+  <button class="filtro" onclick="filtrar('doce', this)">🍬 Doces de Festa</button>
+  <button class="filtro" onclick="filtrar('gourmet', this)">✨ Gourmet</button>
+  <button class="filtro" onclick="filtrar('bebida', this)">🥤 Bebidas</button>
+</div>
+
+<div id="conteudo-principal"></div>
+
+<div class="overlay" id="overlay" onclick="fecharSeClicouFora(event)">
+  <div class="painel-carrinho" id="painel-carrinho">
+    <div class="painel-header">
+      <h2>Meu Carrinho 🛒</h2>
+      <button class="btn-fechar" onclick="fecharCarrinho()">✕</button>
+    </div>
+    <div id="lista-carrinho"></div>
+    <div id="form-area"></div>
+  </div>
+</div>
+
+<div class="modal-sucesso" id="modal-sucesso">
+  <div class="modal-box">
+    <div class="icon">🎉</div>
+    <h2>Pedido Enviado!</h2>
+    <p>A Rafaela já recebeu e vai confirmar em breve pelo WhatsApp!</p>
+    <div class="num-pedido" id="num-pedido-modal" title="Clique para copiar"></div>
+    <p class="hint-consulta">Guarde este número para acompanhar seu pedido aqui no site</p>
+    <button class="btn-ok" onclick="fecharModal()">Ótimo, obrigado! 🎂</button>
+  </div>
+</div>
+
+<div class="modal-status" id="modal-status" onclick="fecharStatusSeClicouFora(event)">
+  <div class="status-box" id="status-box">
+    <div class="status-box-header">
+      <h2>Status do Pedido</h2>
+      <button class="btn-fechar" onclick="fecharStatus()">✕</button>
+    </div>
+    <div id="status-conteudo"></div>
+  </div>
+</div>
+
+<a class="fab-wpp" href="https://wa.me/5511999999999?text=Ol%C3%A1+Rafaela%2C+vim+pelo+site!" target="_blank" rel="noopener" title="Falar com a Rafaela">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.09.534 4.092 1.475 5.84L.057 23.743a.5.5 0 0 0 .6.632l6.077-1.386A11.93 11.93 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.896 0-3.691-.507-5.251-1.394l-.375-.217-3.61.824.865-3.52-.232-.38A9.972 9.972 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+</a>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const WPP_NUMERO = '42998011120';
+
+const PRODUTOS = [
+  { id:1,  cat:'lanche',    foto:'img/x-salada-classico.avif', emoji:'🥪', nome:'Clássico',    desc:'Pão · Queijo · Presunto · Hambúrguer · Batata palha · Molho da casa', preco:16.0 },
+  { id:2,  cat:'lanche',    foto:'img/x-salada.jpg',           emoji:'🌭', nome:'X-Salada',    desc:'Pão · Hambúrguer · Tomate · Alface · Queijo · Presunto · Batata palha · Molho da casa', preco:20.0 },
+  { id:3,  cat:'lanche',    foto:'img/x bacon.jpg',            emoji:'🥚', nome:'X-Bacon',     desc:'Pão · Queijo · Presunto · Alface · Tomate · Hambúrguer · Batata palha · Bacon · Molho da casa', preco:25.0 },
+  { id:4,  cat:'lanche',    foto:'img/x frango.jpg',           emoji:'🍔', nome:'X-Frango',    desc:'Pão · Hambúrguer · Presunto · Queijo · Tomate · Alface · Frango · Batata palha · Molho da casa', preco:25.0 },
+  { id:5,  cat:'lanche',    foto:'img/x calabresa.jpg',        emoji:'🍔', nome:'X-Calabresa', desc:'Pão · Hambúrguer · Presunto · Queijo · Tomate · Alface · Calabresa · Batata palha · Molho da casa', preco:25.0 },
+  { id:6,  cat:'lanche',    foto:'img/x tudo.jpg',             emoji:'🍔', nome:'X-Tudo',      desc:'Pão · Hambúrguer · Queijo · Presunto · Tomate · Alface · Calabresa · Bacon · Frango · Ovo · Molho da casa', preco:30.0 },
+  { id:11, cat:'artesanal', foto:'img/x frango artesanal.jpg', emoji:'🍔', nome:'Frango',      desc:'Pão artesanal · Frango · Queijo · Presunto · Batata palha · Molho da casa', preco:18.0, artesanal:true },
+  { id:12, cat:'artesanal', foto:'img/x salada arte.jpg',      emoji:'🍔', nome:'X-Salada',    desc:'Pão artesanal · Hambúrguer · Tomate · Alface · Queijo · Presunto · Batata palha · Molho da casa', preco:22.0, artesanal:true },
+  { id:13, cat:'artesanal', foto:'img/bacon.jpg',              emoji:'🍔', nome:'X-Bacon',     desc:'Pão artesanal · Queijo · Presunto · Alface · Tomate · Hambúrguer · Batata palha · Bacon · Molho da casa', preco:27.0, artesanal:true },
+  { id:14, cat:'artesanal', foto:'img/x burguer.jpg',          emoji:'🍔', nome:'X-Burguer',   desc:'Pão artesanal · Hambúrguer · Presunto · Queijo · Tomate · Alface · Batata palha · Molho da casa', preco:27.0, artesanal:true },
+  { id:15, cat:'artesanal', foto:'img/x calabresa arte.jpg',   emoji:'🍔', nome:'X-Calabresa', desc:'Pão artesanal · Hambúrguer · Presunto · Queijo · Tomate · Alface · Calabresa · Batata palha · Molho', preco:27.0, artesanal:true },
+  { id:16, cat:'artesanal', foto:'img/x tudo arte.jpg',        emoji:'🍔', nome:'X-Tudo',      desc:'Pão artesanal · Hambúrguer · Queijo · Presunto · Tomate · Alface · Calabresa · Bacon · Frango · Ovo', preco:35.0, artesanal:true },
+  { id:24, cat:'salgado',   foto:'img/risoles.jpg',            emoji:'🫔', nome:'Risoles',     desc:'Presunto e queijo — crocante e cremoso', preco:5.0 },
+  { id:31, cat:'coxinha',   foto:'img/coxinha-frango.jpg',     emoji:'🍗', nome:'Coxinha de Frango',               desc:'Frango desfiado, tamanho grande', preco:6.0 },
+  { id:32, cat:'coxinha',   foto:'img/coxinha-catupiry.jpg',   emoji:'🍗', nome:'Coxinha Frango c/ Catupiry',      desc:'Frango com catupiry cremoso, tamanho grande', preco:7.0 },
+  { id:33, cat:'coxinha',   foto:'img/coxinha-bacon.jpg',      emoji:'🍗', nome:'Coxinha Frango, Catupiry e Bacon',desc:'Trio irresistível, tamanho grande', preco:7.0 },
+  { id:34, cat:'coxinha',   foto:'img/coxinha-costela.jpg',    emoji:'🍗', nome:'Coxinha de Costela',              desc:'Costela desfiada temperada, tamanho grande', preco:10.0 },
+  { id:41, cat:'bolo', foto:'img/bolo-cenoura.jpg',   emoji:'🎂', nome:'Bolo de Cenoura P',   desc:'Encomenda · serve 12–15 pessoas · cobertura de chocolate', preco:190.0, encomenda:true, tamanho:'P' },
+  { id:42, cat:'bolo', foto:'img/bolo-cenoura.jpg',   emoji:'🎂', nome:'Bolo de Cenoura M',   desc:'Encomenda · serve 20–25 pessoas · cobertura de chocolate', preco:220.0, encomenda:true, tamanho:'M' },
+  { id:43, cat:'bolo', foto:'img/bolo-cenoura.jpg',   emoji:'🎂', nome:'Bolo de Cenoura G',   desc:'Encomenda · serve 30–35 pessoas · cobertura de chocolate', preco:340.0, encomenda:true, tamanho:'G' },
+  { id:44, cat:'bolo', foto:'img/bolo-fuba.jpg',      emoji:'🎂', nome:'Bolo de Fubá P',      desc:'Encomenda · serve 12–15 pessoas · receita caseira da vovó', preco:190.0, encomenda:true, tamanho:'P' },
+  { id:45, cat:'bolo', foto:'img/bolo-fuba.jpg',      emoji:'🎂', nome:'Bolo de Fubá M',      desc:'Encomenda · serve 20–25 pessoas · receita caseira da vovó', preco:220.0, encomenda:true, tamanho:'M' },
+  { id:46, cat:'bolo', foto:'img/bolo-fuba.jpg',      emoji:'🎂', nome:'Bolo de Fubá G',      desc:'Encomenda · serve 30–35 pessoas · receita caseira da vovó', preco:340.0, encomenda:true, tamanho:'G' },
+  { id:47, cat:'bolo', foto:'img/bolo-chocolate.jpg', emoji:'🎂', nome:'Bolo de Chocolate P', desc:'Encomenda · serve 12–15 pessoas · prestígio ou brigadeiro', preco:190.0, encomenda:true, tamanho:'P' },
+  { id:48, cat:'bolo', foto:'img/bolo-chocolate.jpg', emoji:'🎂', nome:'Bolo de Chocolate M', desc:'Encomenda · serve 20–25 pessoas · prestígio ou brigadeiro', preco:220.0, encomenda:true, tamanho:'M' },
+  { id:49, cat:'bolo', foto:'img/bolo-chocolate.jpg', emoji:'🎂', nome:'Bolo de Chocolate G', desc:'Encomenda · serve 30–35 pessoas · prestígio ou brigadeiro', preco:340.0, encomenda:true, tamanho:'G' },
+  { id:51, cat:'doce', foto:'img/brigadeiro.jpg',  emoji:'🍫', nome:'Brigadeiro',  desc:'Clássico de chocolate — por cento', preco:90.0, doce:true },
+  { id:52, cat:'doce', foto:'img/beijinho.jpg',    emoji:'🥥', nome:'Beijinho',    desc:'Coco ralado com cravo — por cento', preco:90.0, doce:true },
+  { id:53, cat:'doce', foto:'img/cajuzinho.jpg',   emoji:'🍬', nome:'Cajuzinho',   desc:'Amendoim e chocolate — por cento', preco:90.0, doce:true },
+  { id:54, cat:'doce', foto:'img/dois-amores.jpg', emoji:'🍭', nome:'Dois Amores', desc:'Brigadeiro e beijinho juntos — por cento', preco:90.0, doce:true },
+  { id:71, cat:'bebida', foto:'img/coca cola.jpg', emoji:'🥤', nome:'Coca-Cola Lata', desc:'Lata 350ml gelada', preco:6.0, bebida:true },
+  { id:72, cat:'bebida', foto:'img/fanta.jpg',     emoji:'🧃', nome:'Fanta Lata',     desc:'Lata 350ml gelada', preco:6.0, bebida:true },
+  { id:73, cat:'bebida', foto:'img/guarana.jpg',   emoji:'🥤', nome:'Guaraná Lata',   desc:'Lata 350ml gelada', preco:6.0, bebida:true },
+  { id:74, cat:'bebida', foto:'img/sprite.jpg',    emoji:'🫧', nome:'Sprite Lata',    desc:'Lata 350ml gelada', preco:6.0, bebida:true },
+  { id:61, cat:'gourmet', foto:'img/ninho-nutella.jpg',  emoji:'🧁', nome:'Ninho com Nutella', desc:'Leite em pó com recheio de Nutella — por cento', preco:120.0, gourmet:true },
+  { id:62, cat:'gourmet', foto:'img/doce-uva.jpg',       emoji:'🍇', nome:'Uva',               desc:'Brigadeiro recheado com uva — por cento', preco:120.0, gourmet:true },
+  { id:63, cat:'gourmet', foto:'img/doce-maracuja.jpg',  emoji:'🍊', nome:'Maracujá',          desc:'Brigadeiro de maracujá cremoso — por cento', preco:120.0, gourmet:true },
+  { id:64, cat:'gourmet', foto:'img/doce-ferrero.jpg',   emoji:'🍫', nome:'Ferrero',           desc:'Brigadeiro estilo Ferrero Rocher — por cento', preco:120.0, gourmet:true },
+  { id:65, cat:'gourmet', foto:'img/doce-prestigio.jpg', emoji:'🍮', nome:'Prestígio',         desc:'Chocolate com coco — por cento', preco:120.0, gourmet:true },
+  { id:66, cat:'gourmet', foto:'img/doce-pacoca.jpg',    emoji:'🥜', nome:'Paçoca',            desc:'Brigadeiro de amendoim com paçoca — por cento', preco:120.0, gourmet:true },
+  { id:67, cat:'gourmet', foto:'img/doce-ninho.jpg',     emoji:'🤍', nome:'Só de Ninho',       desc:'Puro leite em pó, sem recheio — por cento', preco:120.0, gourmet:true },
+];
+
+const SABORES_BOLO = [
+  { nome:'Bolo de Cenoura',   emoji:'🎂', ids:[41,42,43] },
+  { nome:'Bolo de Fubá',      emoji:'🎂', ids:[44,45,46] },
+  { nome:'Bolo de Chocolate', emoji:'🎂', ids:[47,48,49] },
+];
+const TAM_INFO = {
+  P: { pessoas:'12–15 pessoas' },
+  M: { pessoas:'20–25 pessoas' },
+  G: { pessoas:'30–35 pessoas' },
+};
+
+const STATUS_PASSOS = [
+  { key:'recebido',  icon:'📥', titulo:'Pedido Recebido', sub:'Aguardando confirmação da Rafaela' },
+  { key:'confirmado',icon:'✅', titulo:'Confirmado',       sub:'Pedido aceito e na fila de produção' },
+  { key:'producao',  icon:'👩‍🍳', titulo:'Em Produção',    sub:'A Rafaela está preparando seu pedido' },
+  { key:'pronto',    icon:'📦', titulo:'Pronto',           sub:'Seu pedido está pronto para retirada / entrega' },
+  { key:'entregue',  icon:'🎉', titulo:'Entregue',         sub:'Pedido concluído. Bom apetite!' },
+];
+
+const STATUS_MAP = {
+  novo:      'recebido',
+  preparo:   'producao',
+  pronto:    'pronto',
+  entregue:  'entregue',
+  cancelado: 'recebido',
+};
+
+const STATUS_BADGE = {
+  recebido:   { cls:'pendente',   txt:'⏳ Aguardando confirmação' },
+  confirmado: { cls:'confirmado', txt:'✅ Confirmado' },
+  producao:   { cls:'producao',   txt:'👩‍🍳 Em produção' },
+  pronto:     { cls:'pronto',     txt:'📦 Pronto!' },
+  entregue:   { cls:'entregue',   txt:'🎉 Entregue' },
+};
+
+let carrinho = [];
+let categoriaAtiva = 'todos';
+let entrega = 'retirada';
+let pagamento = 'pix';
+
+function mostrarToast(msg, dur = 2800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('visivel');
+  setTimeout(() => t.classList.remove('visivel'), dur);
+}
+
+function imgArea(prod, alt) {
+  const h = alt || 110;
+  if (prod.foto) {
+    return `<div class="card-img" style="height:${h}px"><img src="${prod.foto}" alt="${prod.nome}" loading="lazy"></div>`;
+  }
+  return `<div class="card-img-placeholder" style="height:${h}px">${prod.emoji}</div>`;
+}
+function fmt(v) { return 'R$ ' + v.toFixed(2).replace('.',','); }
+
+function renderConteudo() {
+  const cont = document.getElementById('conteudo-principal');
+  if (categoriaAtiva === 'bolo') { cont.innerHTML = renderSecaoBolo(); return; }
+
+  const cats = categoriaAtiva === 'todos'
+    ? ['lanche','artesanal','salgado','coxinha','doce','gourmet','bebida']
+    : [categoriaAtiva];
+  const nomeCat = {
+    lanche:'🥪 Lanches', artesanal:'🍔 Hambúrgueres Artesanais',
+    salgado:'🥙 Salgados', coxinha:'🍗 Coxinhas (tamanho grande)',
+    doce:'🍬 Doces de Festa — por cento', gourmet:'✨ Doces Gourmet — por cento', bebida:'🥤 Bebidas',
+  };
+
+  let html = '';
+  if (categoriaAtiva === 'todos') {
+    html += `<div class="secao-titulo">🎂 Bolos sob Encomenda</div>
+             <div class="aviso-encomenda visivel">📅 <strong>Encomenda antecipada necessária.</strong> Fale pelo WhatsApp para confirmar data e sabor antes de finalizar.</div>`;
+    html += renderSecaoBolo(true);
+  }
+  cats.forEach(cat => {
+    const lista = PRODUTOS.filter(p => p.cat === cat);
+    if (!lista.length) return;
+    html += `<div class="secao-titulo">${nomeCat[cat]}</div>`;
+    if (cat === 'doce' || cat === 'gourmet')
+      html += `<div class="aviso-encomenda visivel">🍬 <strong>Doces por cento.</strong> Para grandes quantidades, avise com antecedência nas observações.</div>`;
+    html += `<div class="produtos">${lista.map(cardProduto).join('')}</div>`;
+  });
+  cont.innerHTML = html;
+}
+
+function renderSecaoBolo(inline) {
+  let html = inline ? '' : `<div class="aviso-encomenda visivel">📅 <strong>Encomenda antecipada necessária.</strong> Fale pelo WhatsApp para confirmar data e sabor.</div>`;
+  SABORES_BOLO.forEach(sb => {
+    const prods = sb.ids.map(id => PRODUTOS.find(p => p.id === id));
+    html += `<div style="padding:${inline?'8px':'12px'} 20px 0">
+      <div style="font-weight:700;font-size:.93rem;margin-bottom:10px;color:var(--marrom)">${sb.emoji} ${sb.nome}</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:16px">
+        ${prods.map(p => `
+          <div class="card" onclick="adicionarAoCarrinho(${p.id})">
+            <div class="tag-tamanho">${p.tamanho}</div>
+            <div class="tag-encomenda">Encomenda</div>
+            ${imgArea(p, 80)}
+            <div class="card-body" style="padding:9px">
+              <div class="card-nome" style="font-size:.78rem">Tamanho ${p.tamanho}</div>
+              <div class="card-desc" style="font-size:.69rem">${TAM_INFO[p.tamanho].pessoas}</div>
+              <div class="card-footer">
+                <span class="preco" style="font-size:.85rem">${fmt(p.preco)}</span>
+                <button class="btn-add" style="width:25px;height:25px;font-size:.95rem">+</button>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  });
+  return html;
+}
+
+function cardProduto(p) {
+  const tagDoce      = p.doce     ? `<div class="tag-doce">cento</div>` : '';
+  const tagArtesanal = p.artesanal? `<div class="tag-artesanal">Artesanal</div>` : '';
+  const tagGourmet   = p.gourmet  ? `<div class="tag-gourmet">Gourmet</div>` : '';
+  const tagBebida    = p.bebida   ? `<div class="tag-doce" style="background:#2563eb">lata</div>` : '';
+  return `
+    <div class="card" onclick="adicionarAoCarrinho(${p.id})">
+      ${tagDoce}${tagArtesanal}${tagGourmet}${tagBebida}
+      ${imgArea(p, 110)}
+      <div class="card-body">
+        <div class="card-nome">${p.nome}</div>
+        <div class="card-desc">${p.desc}</div>
+        <div class="card-footer">
+          <span class="preco">${fmt(p.preco)}</span>
+          <button class="btn-add">+</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function filtrar(cat, btn) {
+  categoriaAtiva = cat;
+  document.querySelectorAll('.filtro').forEach(b => b.classList.remove('ativo'));
+  btn.classList.add('ativo');
+  renderConteudo();
+}
+
+function adicionarAoCarrinho(id) {
+  const prod = PRODUTOS.find(p => p.id === id);
+  const exist = carrinho.find(i => i.id === id);
+  if (exist) exist.qtd++;
+  else carrinho.push({ ...prod, qtd: 1 });
+  atualizarBadge();
+  mostrarToast(`✅ ${prod.nome} adicionado ao carrinho`);
+  renderCarrinho();
+}
+function atualizarBadge() {
+  document.getElementById('badge-count').textContent = carrinho.reduce((s,i) => s+i.qtd, 0);
+}
+function abrirCarrinho() {
+  document.getElementById('overlay').classList.add('aberto');
+  renderCarrinho();
+}
+function fecharCarrinho() { document.getElementById('overlay').classList.remove('aberto'); }
+function fecharSeClicouFora(e) { if (e.target.id === 'overlay') fecharCarrinho(); }
+
+function renderCarrinho() {
+  const lista    = document.getElementById('lista-carrinho');
+  const formArea = document.getElementById('form-area');
+  if (carrinho.length === 0) {
+    lista.innerHTML = `<div class="vazio"><div class="icon">🛒</div><p>Seu carrinho está vazio.<br>Adicione produtos para continuar.</p></div>`;
+    formArea.innerHTML = '';
+    return;
+  }
+
+  lista.innerHTML = carrinho.map(i => `
+    <div class="item-carrinho">
+      <span class="item-emoji">${i.emoji}</span>
+      <div class="item-info">
+        <div class="item-nome">${i.nome}</div>
+        <div class="item-sub">${fmt(i.preco)}${i.encomenda?' · Encomenda':i.doce||i.gourmet?' · cento':i.artesanal?' · Artesanal':i.bebida?' · lata':''}</div>
+      </div>
+      <div class="ctrl-qtd">
+        <button onclick="alterarQtd(${i.id},-1)">−</button>
+        <span>${i.qtd}</span>
+        <button onclick="alterarQtd(${i.id},1)">+</button>
+      </div>
+      <div class="item-preco">${fmt(i.preco*i.qtd)}</div>
+    </div>
+  `).join('');
+
+  const temEncomenda = carrinho.some(i => i.encomenda);
+  const temDoce      = carrinho.some(i => i.doce || i.gourmet);
+  const subtotal     = carrinho.reduce((s,i) => s + i.preco*i.qtd, 0);
+  const taxa         = entrega === 'entrega' ? 5.0 : 0;
+  const total        = subtotal + taxa;
+
+  formArea.innerHTML = `
+    ${temEncomenda ? `<div class="aviso-cart">📅 <strong>Atenção:</strong> Seu carrinho tem bolo(s) sob encomenda. A Rafaela vai entrar em contato para confirmar data e detalhes.</div>` : ''}
+    ${temDoce && !temEncomenda ? `<div class="aviso-cart">🍬 Doces vendidos por cento. Avise a quantidade nas observações.</div>` : ''}
+    <div class="form-pedido">
+      <h3>📦 Tipo de Entrega</h3>
+      <div class="opcoes-entrega">
+        <div class="op-entrega ${entrega==='retirada'?'ativo':''}" onclick="setEntrega('retirada')">
+          <div class="icon">🏪</div>
+          <div class="label">Retirada<br><small>Sem taxa</small></div>
+        </div>
+        <div class="op-entrega ${entrega==='entrega'?'ativo':''}" onclick="setEntrega('entrega')">
+          <div class="icon">🛵</div>
+          <div class="label">Entrega<br><small>+ R$ 5,00</small></div>
+        </div>
+      </div>
+      <div id="campo-endereco" style="display:${entrega==='entrega'?'block':'none'}">
+        <div class="campo">
+          <label>Endereço de entrega</label>
+          <input type="text" id="inp-endereco" placeholder="Rua, número, bairro">
+        </div>
+      </div>
+      <h3>💳 Forma de Pagamento</h3>
+      <div class="opcoes-pgto">
+        <div class="op-pgto ${pagamento==='pix'?'ativo':''}" onclick="setPagamento('pix')">
+          <div class="icon">📱</div><div class="label">Pix</div>
+        </div>
+        <div class="op-pgto ${pagamento==='cartao'?'ativo':''}" onclick="setPagamento('cartao')">
+          <div class="icon">💳</div><div class="label">Cartão</div>
+        </div>
+      </div>
+      <div class="pix-info ${pagamento==='pix'?'visivel':''}" id="pix-info">
+        📱 Chave Pix: <span class="pix-chave">(11) 99999-9999</span><br>
+        <small>Envie o comprovante pelo WhatsApp após confirmar o pedido.</small>
+      </div>
+      <h3>📋 Seus Dados</h3>
+      <div class="campo">
+        <label>Seu nome</label>
+        <input type="text" id="inp-nome" placeholder="Como devemos te chamar?">
+      </div>
+      <div class="campo">
+        <label>WhatsApp</label>
+        <input type="tel" id="inp-fone" placeholder="(XX) XXXXX-XXXX">
+      </div>
+      <div class="campo">
+        <label>Observações${temEncomenda?' — informe a data do evento':temDoce?' — quantidade e sabores':' (opcional)'}</label>
+        <textarea id="inp-obs" placeholder="${temEncomenda?'Ex: Evento em 15/06, quero saber da disponibilidade...':temDoce?'Ex: 2 centos de brigadeiro e 1 cento de beijinho...':'Alguma preferência ou alergia?'}"></textarea>
+      </div>
+      <div class="total-box">
+        <div class="total-linha"><span>Subtotal</span><span>${fmt(subtotal)}</span></div>
+        ${entrega==='entrega'?`<div class="total-linha"><span>Taxa de entrega</span><span>R$ 5,00</span></div>`:''}
+        <div class="total-linha destaque"><span>Total</span><span>${fmt(total)}</span></div>
+      </div>
+      <button class="btn-pedir" onclick="enviarPedido()">Confirmar Pedido ✔</button>
+    </div>
+  `;
+}
+
+function alterarQtd(id, delta) {
+  const idx = carrinho.findIndex(i => i.id === id);
+  if (idx === -1) return;
+  carrinho[idx].qtd += delta;
+  if (carrinho[idx].qtd <= 0) carrinho.splice(idx, 1);
+  atualizarBadge();
+  renderCarrinho();
+}
+function setEntrega(t) { entrega = t; renderCarrinho(); }
+function setPagamento(t) { pagamento = t; renderCarrinho(); }
+
+const API_URL = window.location.origin;
+
+async function enviarPedido() {
+  const nome = document.getElementById('inp-nome')?.value.trim();
+  const fone = document.getElementById('inp-fone')?.value.trim();
+  const end  = document.getElementById('inp-endereco')?.value.trim();
+  const obs  = document.getElementById('inp-obs')?.value.trim();
+
+  if (!nome || !fone) { alert('Por favor, preencha seu nome e WhatsApp.'); return; }
+  if (entrega === 'entrega' && !end) { alert('Por favor, informe o endereço de entrega.'); return; }
+
+  const btn = document.querySelector('.btn-pedir');
+  btn.disabled = true; btn.textContent = 'Enviando...';
+
+  try {
+    const resp = await fetch(`${API_URL}/api/pedidos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        cliente: nome, fone, entrega,
+        endereco: end || '',
+        pagamento, obs: obs || '',
+        itens: carrinho.map(i => ({ nome: i.nome, qtd: i.qtd, preco: i.preco })),
+      }),
+    });
+    const data = await resp.json();
+    if (!resp.ok) {
+      alert(data.erro || 'Erro ao enviar pedido.');
+      btn.disabled = false; btn.textContent = 'Confirmar Pedido ✔';
+      return;
+    }
+    const numPedido = data.pedido.id;
+    // Mostra só o ID puro no modal (ex: PED-CF0FC7AD), sem a palavra "Pedido"
+    document.getElementById('num-pedido-modal').textContent = numPedido;
+    document.getElementById('modal-sucesso').classList.add('aberto');
+    fecharCarrinho();
+    carrinho = []; atualizarBadge();
+  } catch {
+    alert('Erro de conexão com o servidor. Tente novamente.');
+    btn.disabled = false; btn.textContent = 'Confirmar Pedido ✔';
+  }
+}
+
+function fecharModal() {
+  document.getElementById('modal-sucesso').classList.remove('aberto');
+}
+
+// ✅ CORRIGIDO: extrai apenas o código PED-XXXXXXXX de qualquer texto colado
+async function consultarStatus() {
+  const raw = document.getElementById('inp-consulta').value.trim().toUpperCase();
+  if (!raw) { mostrarToast('⚠️ Informe o número do pedido'); return; }
+
+  // Tenta achar o padrão PED-XXXXXXXX no que foi digitado/colado
+  const match = raw.match(/PED-[A-Z0-9]+/);
+  const id = match ? match[0] : ('PED-' + raw.replace(/[^A-Z0-9]/g, ''));
+
+  try {
+    const resp = await fetch(`${API_URL}/api/pedidos/publico/${id}`);
+    if (!resp.ok) { mostrarToast('❌ Pedido não encontrado'); return; }
+    const data = await resp.json();
+    mostrarModalStatus(data.pedido);
+  } catch {
+    mostrarToast('❌ Erro ao buscar pedido. Tente novamente.');
+  }
+}
+
+document.getElementById('inp-consulta').addEventListener('keydown', e => {
+  if (e.key === 'Enter') consultarStatus();
+});
+
+function mostrarModalStatus(pedido) {
+  const statusMapeado = STATUS_MAP[pedido.status] || 'recebido';
+  const idxAtual      = STATUS_PASSOS.findIndex(s => s.key === statusMapeado);
+  const badge         = STATUS_BADGE[statusMapeado] || STATUS_BADGE.recebido;
+  const subtotal      = pedido.itens.reduce((s,i) => s + i.preco * i.qtd, 0);
+  const taxa          = pedido.entrega === 'entrega' ? 5 : 0;
+
+  const timelineHTML = STATUS_PASSOS.map((passo, i) => {
+    let cls = '';
+    if (i < idxAtual)   cls = 'feito';
+    if (i === idxAtual) cls = 'atual';
+    return `
+      <div class="tl-step ${cls}">
+        <div class="tl-dot">${i < idxAtual ? '✓' : passo.icon}</div>
+        <div class="tl-texto">
+          <div class="tl-titulo">${passo.titulo}</div>
+          <div class="tl-sub">${i === idxAtual ? `<strong>${passo.sub}</strong>` : passo.sub}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  const itensHTML = pedido.itens.map(i =>
+    `<div class="linha"><span>${i.qtd}× ${i.nome}</span><span>${fmt(i.preco * i.qtd)}</span></div>`
+  ).join('');
+
+  const msgWpp = encodeURIComponent(
+    `Olá Rafaela! 😊 Gostaria de saber o status do meu pedido *${pedido.id}*.\nNome: ${pedido.cliente}`
+  );
+
+  document.getElementById('status-conteudo').innerHTML = `
+    <div>
+      <div style="font-size:.8rem;color:var(--cinza);margin-bottom:4px">Pedido</div>
+      <div style="font-weight:800;font-size:1.1rem;color:var(--marrom);margin-bottom:12px">${pedido.id}</div>
+    </div>
+    <span class="status-badge ${badge.cls}">${badge.txt}</span>
+    <div class="timeline">${timelineHTML}</div>
+    <div class="status-resumo">
+      <div style="font-weight:700;font-size:.85rem;margin-bottom:8px;color:var(--marrom)">📋 Resumo</div>
+      ${itensHTML}
+      ${taxa ? `<div class="linha"><span>Entrega</span><span>${fmt(taxa)}</span></div>` : ''}
+      <div class="linha" style="border-top:1px solid var(--borda);padding-top:6px;margin-top:4px;font-weight:700">
+        <span>Total</span><span style="color:var(--rosa-escuro)">${fmt(subtotal+taxa)}</span>
+      </div>
+      <div style="margin-top:6px;font-size:.78rem;color:var(--cinza)">
+        ${pedido.entrega === 'entrega' ? '🛵 Entrega' : '🏪 Retirada'} · ${pedido.pagamento === 'pix' ? '📱 Pix' : '💳 Cartão'}
+        ${pedido.obs ? `<br>📝 ${pedido.obs}` : ''}
+      </div>
+    </div>
+    <a class="btn-wpp-status" href="https://wa.me/${WPP_NUMERO}?text=${msgWpp}" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.09.534 4.092 1.475 5.84L.057 23.743a.5.5 0 0 0 .6.632l6.077-1.386A11.93 11.93 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.896 0-3.691-.507-5.251-1.394l-.375-.217-3.61.824.865-3.52-.232-.38A9.972 9.972 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+      Perguntar sobre o pedido
+    </a>
+  `;
+  document.getElementById('modal-status').classList.add('aberto');
+}
+
+function fecharStatus() { document.getElementById('modal-status').classList.remove('aberto'); }
+function fecharStatusSeClicouFora(e) { if (e.target.id === 'modal-status') fecharStatus(); }
+
+renderConteudo();
+</script>
+</body>
+</html>

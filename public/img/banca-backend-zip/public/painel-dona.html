@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel da Dona Rosa — Gerência</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --rosa:    #E8536A;
+    --rosa-esc:#C73A52;
+    --creme:   #FDF6F0;
+    --marrom:  #3B2314;
+    --cinza:   #6B7280;
+    --borda:   #E5E7EB;
+    --verde:   #22C55E;
+    --amarelo: #F59E0B;
+    --azul:    #3B82F6;
+    --fundo:   #F8FAFC;
+    --branco:  #FFFFFF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--fundo);
+    color: #1e293b;
+    min-height: 100vh;
+  }
+
+  /* LOGIN */
+  .tela-login {
+    position: fixed; inset: 0;
+    background: linear-gradient(135deg, var(--marrom) 0%, #5a3520 100%);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+  .login-box {
+    background: #fff; border-radius: 20px;
+    padding: 40px 36px; text-align: center;
+    max-width: 360px; width: 100%;
+  }
+  .login-box .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; color: var(--marrom);
+    margin-bottom: 6px;
+  }
+  .login-box .logo span { color: var(--rosa); }
+  .login-box .sub { color: var(--cinza); font-size: .85rem; margin-bottom: 28px; }
+  .login-campo {
+    text-align: left; margin-bottom: 16px;
+  }
+  .login-campo label {
+    font-size: .78rem; font-weight: 600;
+    color: var(--cinza); text-transform: uppercase; letter-spacing: .5px;
+    display: block; margin-bottom: 6px;
+  }
+  .login-campo input {
+    width: 100%; padding: 12px 14px;
+    border: 2px solid var(--borda); border-radius: 10px;
+    font-family: 'Inter', sans-serif; font-size: .95rem;
+    outline: none; transition: border-color .2s;
+  }
+  .login-campo input:focus { border-color: var(--rosa); }
+  .btn-login {
+    width: 100%; background: var(--rosa); color: #fff;
+    border: none; border-radius: 12px; padding: 14px;
+    font-size: 1rem; font-weight: 700; cursor: pointer;
+    transition: background .2s; margin-top: 4px;
+  }
+  .btn-login:hover { background: var(--rosa-esc); }
+  .login-erro {
+    color: var(--rosa-esc); font-size: .85rem;
+    margin-top: 12px; display: none;
+  }
+  .login-erro.visivel { display: block; }
+
+  /* PAINEL PRINCIPAL */
+  .app { display: none; }
+  .app.visivel { display: block; }
+
+  /* SIDEBAR */
+  .layout { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 220px; background: var(--marrom);
+    padding: 24px 0; display: flex; flex-direction: column;
+    position: sticky; top: 0; height: 100vh;
+  }
+  .sidebar .brand {
+    font-family: 'Playfair Display', serif;
+    color: #fff; font-size: 1.1rem;
+    padding: 0 20px 24px;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+  }
+  .sidebar .brand span { color: var(--rosa); }
+  .sidebar .brand small { display: block; color: rgba(255,255,255,.4); font-size: .7rem; font-family: 'Inter', sans-serif; margin-top: 2px; }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 20px; color: rgba(255,255,255,.6);
+    cursor: pointer; font-size: .88rem; font-weight: 500;
+    transition: all .2s; border-left: 3px solid transparent;
+    margin-top: 4px;
+  }
+  .nav-item:hover, .nav-item.ativo {
+    color: #fff; background: rgba(255,255,255,.08);
+    border-left-color: var(--rosa);
+  }
+  .nav-item .icon { font-size: 1.1rem; }
+  .sidebar-bottom { margin-top: auto; padding: 20px; }
+  .btn-sair {
+    width: 100%; background: rgba(255,255,255,.08);
+    color: rgba(255,255,255,.7); border: 1px solid rgba(255,255,255,.15);
+    border-radius: 8px; padding: 10px; font-size: .85rem;
+    cursor: pointer; font-family: 'Inter', sans-serif;
+    transition: background .2s;
+  }
+  .btn-sair:hover { background: rgba(255,255,255,.15); }
+
+  /* CONTEÚDO */
+  .conteudo { flex: 1; padding: 28px; overflow-y: auto; }
+
+  .pagina { display: none; }
+  .pagina.ativa { display: block; }
+
+  .page-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; color: var(--marrom);
+  }
+  .page-header small { color: var(--cinza); font-size: .8rem; display: block; }
+
+  /* CARDS RESUMO */
+  .resumo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px; margin-bottom: 28px;
+  }
+  .resumo-card {
+    background: var(--branco); border-radius: 14px;
+    padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .resumo-card .rc-label { font-size: .75rem; font-weight: 600; color: var(--cinza); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+  .resumo-card .rc-valor { font-size: 1.8rem; font-weight: 700; color: var(--marrom); line-height: 1; }
+  .resumo-card .rc-icon { font-size: 1.4rem; float: right; margin-top: -32px; }
+
+  /* FILTROS DE STATUS */
+  .filtros-status {
+    display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .fs-btn {
+    padding: 7px 16px; border-radius: 50px; border: 2px solid var(--borda);
+    font-size: .8rem; font-weight: 600; cursor: pointer; background: var(--branco);
+    transition: all .2s;
+  }
+  .fs-btn.ativo { background: var(--marrom); color: #fff; border-color: var(--marrom); }
+
+  /* TABELA DE PEDIDOS */
+  .tabela-wrap { overflow-x: auto; }
+  table {
+    width: 100%; border-collapse: collapse;
+    background: var(--branco); border-radius: 14px;
+    overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  thead { background: var(--marrom); }
+  thead th {
+    padding: 12px 14px; font-size: .78rem; font-weight: 600;
+    color: rgba(255,255,255,.8); text-align: left; white-space: nowrap;
+  }
+  tbody tr { border-bottom: 1px solid var(--borda); transition: background .15s; }
+  tbody tr:hover { background: var(--creme); }
+  tbody tr:last-child { border-bottom: none; }
+  td {
+    padding: 13px 14px; font-size: .85rem; vertical-align: middle;
+  }
+  .td-id { font-weight: 600; color: var(--cinza); font-size: .78rem; }
+  .td-cliente { font-weight: 600; }
+  .td-total { font-weight: 700; color: var(--rosa-esc); }
+
+  /* BADGES STATUS */
+  .badge-status {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 50px;
+    font-size: .75rem; font-weight: 700; white-space: nowrap;
+  }
+  .s-novo     { background: #fef3c7; color: #92400e; }
+  .s-preparo  { background: #dbeafe; color: #1e40af; }
+  .s-pronto   { background: #d1fae5; color: #065f46; }
+  .s-entregue { background: #f1f5f9; color: #475569; }
+
+  /* BOTÕES DE AÇÃO */
+  .acoes { display: flex; gap: 6px; }
+  .btn-acao {
+    padding: 5px 10px; border-radius: 6px; border: none;
+    font-size: .75rem; font-weight: 600; cursor: pointer; transition: all .2s;
+  }
+  .btn-detalhe { background: #e0f2fe; color: #0369a1; }
+  .btn-avancar { background: #d1fae5; color: #065f46; }
+  .btn-cancelar { background: #fee2e2; color: #991b1b; }
+
+  /* MODAL DETALHE PEDIDO */
+  .modal-ov {
+    position: fixed; inset: 0; background: rgba(0,0,0,.5);
+    z-index: 500; display: none;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-ov.aberto { display: flex; }
+  .modal-det {
+    background: #fff; border-radius: 18px;
+    padding: 28px; max-width: 480px; width: 100%;
+    max-height: 85vh; overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  }
+  .modal-det h2 { font-family: 'Playfair Display', serif; margin-bottom: 4px; }
+  .modal-det .det-id { color: var(--cinza); font-size: .8rem; margin-bottom: 18px; }
+  .det-linha {
+    display: flex; justify-content: space-between;
+    padding: 8px 0; border-bottom: 1px solid var(--borda);
+    font-size: .88rem;
+  }
+  .det-linha:last-child { border-bottom: none; }
+  .det-linha .key { color: var(--cinza); font-weight: 500; }
+  .det-linha .val { font-weight: 600; text-align: right; max-width: 60%; }
+  .det-itens { margin: 14px 0; background: var(--creme); border-radius: 10px; padding: 14px; }
+  .det-itens h4 { margin-bottom: 10px; font-size: .85rem; color: var(--cinza); text-transform: uppercase; letter-spacing: .5px; }
+  .det-item { display: flex; justify-content: space-between; font-size: .88rem; margin-bottom: 6px; }
+  .det-total { font-size: 1rem; font-weight: 700; color: var(--rosa-esc); border-top: 2px solid var(--borda); padding-top: 10px; margin-top: 10px; display: flex; justify-content: space-between; }
+  .btn-fechar-det {
+    width: 100%; margin-top: 20px;
+    background: var(--marrom); color: #fff;
+    border: none; border-radius: 10px; padding: 12px;
+    font-size: .9rem; font-weight: 700; cursor: pointer;
+  }
+
+  /* PÁGINA GERÊNCIA */
+  .ger-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+  .ger-card {
+    background: var(--branco); border-radius: 14px; padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .ger-card h3 { font-size: .95rem; margin-bottom: 16px; font-weight: 700; }
+  .bar-item { margin-bottom: 12px; }
+  .bar-label { display: flex; justify-content: space-between; font-size: .82rem; margin-bottom: 4px; color: var(--cinza); }
+  .bar-label strong { color: var(--marrom); }
+  .bar-track { background: var(--borda); border-radius: 50px; height: 8px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 50px; background: var(--rosa); transition: width .6s ease; }
+
+  .semana-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .dia-box { text-align: center; }
+  .dia-nome { font-size: .65rem; color: var(--cinza); margin-bottom: 4px; }
+  .dia-val {
+    background: var(--creme); border-radius: 8px; padding: 8px 4px;
+    font-size: .75rem; font-weight: 700;
+  }
+  .dia-val.destaque { background: var(--rosa); color: #fff; }
+
+  .config-campo { margin-bottom: 16px; }
+  .config-campo label { font-size: .78rem; font-weight: 600; color: var(--cinza); text-transform: uppercase; letter-spacing: .5px; display: block; margin-bottom: 5px; }
+  .config-campo input { width: 100%; padding: 10px 12px; border: 2px solid var(--borda); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: .9rem; outline: none; }
+  .config-campo input:focus { border-color: var(--rosa); }
+  .btn-salvar-config { background: var(--verde); color: #fff; border: none; border-radius: 8px; padding: 10px 20px; font-weight: 700; cursor: pointer; font-size: .88rem; }
+
+  .vazio-tab { text-align: center; padding: 40px; color: var(--cinza); font-size: .9rem; }
+
+  @media (max-width: 700px) {
+    .sidebar { display: none; }
+    .conteudo { padding: 16px; }
+    .ger-grid { grid-template-columns: 1fr; }
+    .resumo-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TELA DE LOGIN -->
+<div class="tela-login" id="tela-login">
+  <div class="login-box">
+    <div class="logo">Banca da <span>Dona Rosa</span> 🌸</div>
+    <div class="sub">Área exclusiva — Gerência</div>
+    <div class="login-campo">
+      <label>Usuário</label>
+      <input type="text" id="inp-user" placeholder="donarosa" autocomplete="username">
+    </div>
+    <div class="login-campo">
+      <label>Senha</label>
+      <input type="password" id="inp-senha" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+    </div>
+    <button class="btn-login" onclick="login()">Entrar</button>
+    <div class="login-erro" id="login-erro">Usuário ou senha incorretos.</div>
+  </div>
+</div>
+
+<!-- PAINEL PRINCIPAL -->
+<div class="app" id="app">
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="brand">
+        Dona <span>Rosa</span> 🌸
+        <small>Painel de Gerência</small>
+      </div>
+      <div class="nav-item ativo" onclick="navegar('pedidos', this)">
+        <span class="icon">📋</span> Pedidos
+      </div>
+      <div class="nav-item" onclick="navegar('gerencia', this)">
+        <span class="icon">📊</span> Gerência
+      </div>
+      <div class="nav-item" onclick="navegar('config', this)">
+        <span class="icon">⚙️</span> Configurações
+      </div>
+      <div class="sidebar-bottom">
+        <button class="btn-sair" onclick="sair()">🚪 Sair</button>
+      </div>
+    </div>
+
+    <!-- CONTEÚDO -->
+    <div class="conteudo">
+
+      <!-- PEDIDOS -->
+      <div class="pagina ativa" id="pag-pedidos">
+        <div class="page-header">
+          <div>
+            <h1>Pedidos</h1>
+            <small id="sub-pedidos">Carregando...</small>
+          </div>
+          <button class="btn-login" style="width:auto;padding:10px 20px;font-size:.85rem" onclick="carregarPedidos()">🔄 Atualizar</button>
+        </div>
+
+        <div class="resumo-grid" id="resumo-grid"></div>
+
+        <div class="filtros-status">
+          <button class="fs-btn ativo" onclick="filtrarStatus('todos', this)">Todos</button>
+          <button class="fs-btn" onclick="filtrarStatus('novo', this)">🟡 Novos</button>
+          <button class="fs-btn" onclick="filtrarStatus('preparo', this)">🔵 Em preparo</button>
+          <button class="fs-btn" onclick="filtrarStatus('pronto', this)">🟢 Prontos</button>
+          <button class="fs-btn" onclick="filtrarStatus('entregue', this)">⚫ Entregues</button>
+        </div>
+
+        <div class="tabela-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nº</th>
+                <th>Horário</th>
+                <th>Cliente</th>
+                <th>Entrega</th>
+                <th>Pagamento</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-pedidos">
+              <tr><td colspan="8" class="vazio-tab">Carregando pedidos...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- GERÊNCIA -->
+      <div class="pagina" id="pag-gerencia">
+        <div class="page-header">
+          <div><h1>Gerência</h1><small>Visão geral do negócio</small></div>
+        </div>
+
+        <div class="resumo-grid" id="resumo-ger"></div>
+
+        <div class="ger-grid">
+          <div class="ger-card">
+            <h3>🏆 Itens mais vendidos</h3>
+            <div id="ranking-itens"><p style="color:var(--cinza);font-size:.85rem">Sem dados ainda.</p></div>
+          </div>
+          <div class="ger-card">
+            <h3>💳 Formas de pagamento</h3>
+            <div id="ranking-pgto"></div>
+          </div>
+        </div>
+
+        <div class="ger-card" style="margin-bottom:20px">
+          <h3>📅 Pedidos por dia (última semana)</h3>
+          <div class="semana-grid" id="semana-grid"></div>
+        </div>
+      </div>
+
+      <!-- CONFIG -->
+      <div class="pagina" id="pag-config">
+        <div class="page-header">
+          <div><h1>Configurações</h1><small>Dados da banca e acesso</small></div>
+        </div>
+
+        <div class="ger-card" style="max-width:440px; margin-bottom:20px">
+          <h3>🏪 Dados da banca</h3>
+          <br>
+          <div class="config-campo">
+            <label>Nome da banca</label>
+            <input type="text" id="cfg-nome" value="Banca da Dona Rosa">
+          </div>
+          <div class="config-campo">
+            <label>Chave Pix</label>
+            <input type="text" id="cfg-pix" value="(11) 99999-9999">
+          </div>
+          <div class="config-campo">
+            <label>Taxa de entrega (R$)</label>
+            <input type="number" id="cfg-taxa" value="5.00" step="0.5">
+          </div>
+          <div class="config-campo">
+            <label>WhatsApp para notificações</label>
+            <input type="tel" id="cfg-wpp" placeholder="(XX) XXXXX-XXXX">
+          </div>
+          <button class="btn-salvar-config" onclick="salvarConfig()">💾 Salvar</button>
+        </div>
+
+        <div class="ger-card" style="max-width:440px">
+          <h3>🔐 Alterar senha</h3>
+          <br>
+          <div class="config-campo">
+            <label>Senha atual</label>
+            <input type="password" id="cfg-senha-atual" placeholder="••••••••">
+          </div>
+          <div class="config-campo">
+            <label>Nova senha</label>
+            <input type="password" id="cfg-senha-nova" placeholder="••••••••">
+          </div>
+          <div class="config-campo">
+            <label>Confirmar nova senha</label>
+            <input type="password" id="cfg-senha-conf" placeholder="••••••••">
+          </div>
+          <button class="btn-salvar-config" onclick="alterarSenha()">🔒 Alterar Senha</button>
+          <p id="cfg-msg" style="margin-top:10px;font-size:.85rem;color:var(--verde)"></p>
+        </div>
+      </div>
+
+    </div><!-- /conteudo -->
+  </div>
+</div>
+
+<!-- MODAL DETALHE -->
+<div class="modal-ov" id="modal-det">
+  <div class="modal-det">
+    <h2 id="det-titulo">Pedido</h2>
+    <div class="det-id" id="det-id"></div>
+    <div id="det-corpo"></div>
+    <button class="btn-fechar-det" onclick="fecharDetalhe()">Fechar</button>
+  </div>
+</div>
+
+<script>
+  const API_URL = window.location.origin;
+  let TOKEN = sessionStorage.getItem('banca_token') || '';
+
+  let statusFiltro = 'todos';
+  let pedidos = [];
+
+  // LOGIN
+  async function login() {
+    const u = document.getElementById('inp-user').value.trim();
+    const s = document.getElementById('inp-senha').value;
+    try {
+      const r = await fetch(`${API_URL}/api/auth/login`, {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ login: u, senha: s })
+      });
+      const data = await r.json();
+      if (!r.ok) { document.getElementById('login-erro').classList.add('visivel'); return; }
+      TOKEN = data.token;
+      sessionStorage.setItem('banca_token', TOKEN);
+      document.getElementById('tela-login').style.display = 'none';
+      document.getElementById('app').classList.add('visivel');
+      carregarPedidos();
+      renderGerencia();
+    } catch {
+      document.getElementById('login-erro').classList.add('visivel');
+    }
+  }
+
+  function sair() {
+    TOKEN = '';
+    sessionStorage.removeItem('banca_token');
+    document.getElementById('tela-login').style.display = 'flex';
+    document.getElementById('app').classList.remove('visivel');
+    document.getElementById('inp-user').value = '';
+    document.getElementById('inp-senha').value = '';
+    document.getElementById('login-erro').classList.remove('visivel');
+  }
+
+  // NAVEGAÇÃO
+  function navegar(pag, el) {
+    document.querySelectorAll('.pagina').forEach(p => p.classList.remove('ativa'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('ativo'));
+    document.getElementById('pag-' + pag).classList.add('ativa');
+    el.classList.add('ativo');
+    if (pag === 'gerencia') renderGerencia();
+  }
+
+  // CARREGAR PEDIDOS
+  async function carregarPedidos() {
+    try {
+      const r = await fetch(`${API_URL}/api/pedidos?limite=100`, {
+        headers: { 'Authorization': 'Bearer ' + TOKEN }
+      });
+      if (r.status === 401) { sair(); return; }
+      const data = await r.json();
+      pedidos = data.pedidos || [];
+      renderResumo();
+      renderTabela();
+      document.getElementById('sub-pedidos').textContent = `Atualizado em ${new Date().toLocaleTimeString('pt-BR')} · ${pedidos.length} pedidos`;
+    } catch { console.error('Erro ao carregar pedidos'); }
+  }
+
+  function renderResumo() {
+    const hoje = new Date().toDateString();
+    const novos    = pedidos.filter(p => p.status === 'novo').length;
+    const preparo  = pedidos.filter(p => p.status === 'preparo').length;
+    const prontos  = pedidos.filter(p => p.status === 'pronto').length;
+    const totalHoje = pedidos
+      .filter(p => new Date(p.data).toDateString() === hoje)
+      .reduce((s, p) => s + p.total, 0);
+
+    document.getElementById('resumo-grid').innerHTML = `
+      <div class="resumo-card">
+        <div class="rc-label">Novos pedidos</div>
+        <div class="rc-valor">${novos}<span class="rc-icon">🟡</span></div>
+      </div>
+      <div class="resumo-card">
+        <div class="rc-label">Em preparo</div>
+        <div class="rc-valor">${preparo}<span class="rc-icon">🔵</span></div>
+      </div>
+      <div class="resumo-card">
+        <div class="rc-label">Prontos</div>
+        <div class="rc-valor">${prontos}<span class="rc-icon">🟢</span></div>
+      </div>
+      <div class="resumo-card">
+        <div class="rc-label">Faturamento hoje</div>
+        <div class="rc-valor">R$&nbsp;${totalHoje.toFixed(2).replace('.',',')}<span class="rc-icon">💰</span></div>
+      </div>
+    `;
+  }
+
+  function filtrarStatus(s, btn) {
+    statusFiltro = s;
+    document.querySelectorAll('.fs-btn').forEach(b => b.classList.remove('ativo'));
+    btn.classList.add('ativo');
+    renderTabela();
+  }
+
+  const statusLabel = { novo:'🟡 Novo', preparo:'🔵 Em preparo', pronto:'🟢 Pronto', entregue:'⚫ Entregue' };
+  const statusClass = { novo:'s-novo', preparo:'s-preparo', pronto:'s-pronto', entregue:'s-entregue' };
+  const statusNext  = { novo:'preparo', preparo:'pronto', pronto:'entregue', entregue:null };
+  const statusNextLabel = { novo:'Iniciar preparo', preparo:'Marcar pronto', pronto:'Confirmar entrega', entregue:null };
+
+  function renderTabela() {
+    const lista = statusFiltro === 'todos' ? pedidos : pedidos.filter(p => p.status === statusFiltro);
+    const tbody = document.getElementById('tbody-pedidos');
+    if (lista.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" class="vazio-tab">Nenhum pedido encontrado.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = lista.map(p => {
+      const dt = new Date(p.data);
+      const hora = dt.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+      const prox = statusNext[p.status];
+      return `
+        <tr>
+          <td class="td-id">${p.id.slice(-6)}</td>
+          <td>${hora}</td>
+          <td class="td-cliente">${p.cliente}</td>
+          <td>${p.entrega === 'entrega' ? '🛵 Entrega' : '🏪 Retirada'}</td>
+          <td>${p.pagamento === 'pix' ? '📱 Pix' : '💳 Cartão'}</td>
+          <td class="td-total">R$ ${p.total.toFixed(2).replace('.',',')}</td>
+          <td><span class="badge-status ${statusClass[p.status]}">${statusLabel[p.status]}</span></td>
+          <td>
+            <div class="acoes">
+              <button class="btn-acao btn-detalhe" onclick="verDetalhe('${p.id}')">Ver</button>
+              ${prox ? `<button class="btn-acao btn-avancar" onclick="avancarStatus('${p.id}')">${statusNextLabel[p.status]}</button>` : ''}
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  async function avancarStatus(id) {
+    try {
+      const r = await fetch(`${API_URL}/api/pedidos/${id}/status`, {
+        method: 'PATCH', headers: { 'Authorization': 'Bearer ' + TOKEN }
+      });
+      if (!r.ok) { alert('Erro ao atualizar status.'); return; }
+      await carregarPedidos();
+    } catch { alert('Erro de conexão.'); }
+  }
+
+  function verDetalhe(id) {
+    const p = pedidos.find(x => x.id === id);
+    if (!p) return;
+    const dt = new Date(p.data).toLocaleString('pt-BR');
+    document.getElementById('det-titulo').textContent = `Pedido de ${p.cliente}`;
+    document.getElementById('det-id').textContent = `${p.id} · ${dt}`;
+
+    document.getElementById('det-corpo').innerHTML = `
+      <div class="det-linha"><span class="key">WhatsApp</span><span class="val">${p.fone}</span></div>
+      <div class="det-linha"><span class="key">Tipo de entrega</span><span class="val">${p.entrega === 'entrega' ? '🛵 Entrega' : '🏪 Retirada'}</span></div>
+      <div class="det-linha"><span class="key">Endereço</span><span class="val">${p.endereco}</span></div>
+      <div class="det-linha"><span class="key">Pagamento</span><span class="val">${p.pagamento === 'pix' ? '📱 Pix' : '💳 Cartão'}</span></div>
+      <div class="det-linha"><span class="key">Status</span><span class="val">${statusLabel[p.status]}</span></div>
+      ${p.obs ? `<div class="det-linha"><span class="key">Obs.</span><span class="val">${p.obs}</span></div>` : ''}
+
+      <div class="det-itens">
+        <h4>Itens do pedido</h4>
+        ${p.itens.map(i => `
+          <div class="det-item">
+            <span>${i.qtd}x ${i.nome}</span>
+            <span>R$ ${(i.qtd * i.preco).toFixed(2).replace('.',',')}</span>
+          </div>
+        `).join('')}
+        ${p.taxa > 0 ? `<div class="det-item"><span>Taxa de entrega</span><span>R$ ${p.taxa.toFixed(2).replace('.',',')}</span></div>` : ''}
+        <div class="det-total"><span>Total</span><span>R$ ${p.total.toFixed(2).replace('.',',')}</span></div>
+      </div>
+    `;
+    document.getElementById('modal-det').classList.add('aberto');
+  }
+
+  function fecharDetalhe() {
+    document.getElementById('modal-det').classList.remove('aberto');
+  }
+
+  // GERÊNCIA
+  async function renderGerencia() {
+    try {
+      const r = await fetch(`${API_URL}/api/pedidos/relatorio/geral`, {
+        headers: { 'Authorization': 'Bearer ' + TOKEN }
+      });
+      if (!r.ok) return;
+      const rel = await r.json();
+      document.getElementById('resumo-ger').innerHTML = `
+        <div class="resumo-card"><div class="rc-label">Total de pedidos</div><div class="rc-valor">${rel.total_pedidos}<span class="rc-icon">📋</span></div></div>
+        <div class="resumo-card"><div class="rc-label">Entregues</div><div class="rc-valor">${rel.entregues}<span class="rc-icon">✅</span></div></div>
+        <div class="resumo-card"><div class="rc-label">Faturamento total</div><div class="rc-valor">R$ ${rel.faturamento_total.toFixed(2).replace('.',',')}<span class="rc-icon">💵</span></div></div>
+        <div class="resumo-card"><div class="rc-label">Ticket médio</div><div class="rc-valor">R$ ${rel.ticket_medio.toFixed(2).replace('.',',')}<span class="rc-icon">🎯</span></div></div>
+      `;
+      const maxR = rel.ranking_itens[0]?.qtd || 1;
+      document.getElementById('ranking-itens').innerHTML = rel.ranking_itens.length
+        ? rel.ranking_itens.map(i => `<div class="bar-item"><div class="bar-label"><span>${i.nome}</span><strong>${i.qtd} un.</strong></div><div class="bar-track"><div class="bar-fill" style="width:${(i.qtd/maxR*100).toFixed(0)}%"></div></div></div>`).join('')
+        : '<p style="color:var(--cinza);font-size:.85rem">Sem dados ainda.</p>';
+      const tot = rel.pagamentos.pix + rel.pagamentos.cartao || 1;
+      document.getElementById('ranking-pgto').innerHTML = `
+        <div class="bar-item"><div class="bar-label"><span>📱 Pix</span><strong>${rel.pagamentos.pix} pedidos</strong></div><div class="bar-track"><div class="bar-fill" style="width:${(rel.pagamentos.pix/tot*100).toFixed(0)}%;background:#22c55e"></div></div></div>
+        <div class="bar-item"><div class="bar-label"><span>💳 Cartão</span><strong>${rel.pagamentos.cartao} pedidos</strong></div><div class="bar-track"><div class="bar-fill" style="width:${(rel.pagamentos.cartao/tot*100).toFixed(0)}%;background:#3b82f6"></div></div></div>
+      `;
+      const maxS = Math.max(...rel.semana.map(d=>d.pedidos), 1);
+      document.getElementById('semana-grid').innerHTML = rel.semana.map(d => `<div class="dia-box"><div class="dia-nome">${d.dia_semana}</div><div class="dia-val ${d.data === new Date().toISOString().slice(0,10)?'destaque':''}">${d.pedidos}</div></div>`).join('');
+      return;
+    } catch { console.error('Erro ao carregar gerência'); }
+    // FALLBACK para dados locais
+
+    const totalGeral = pedidos.reduce((s, p) => s + p.total, 0);
+    const entregues = pedidos.filter(p => p.status === 'entregue').length;
+    const totalPedidos = pedidos.length;
+    const ticket = totalPedidos ? (totalGeral / totalPedidos) : 0;
+
+    document.getElementById('resumo-ger').innerHTML = `
+      <div class="resumo-card"><div class="rc-label">Total de pedidos</div><div class="rc-valor">${totalPedidos}<span class="rc-icon">📋</span></div></div>
+      <div class="resumo-card"><div class="rc-label">Entregues</div><div class="rc-valor">${entregues}<span class="rc-icon">✅</span></div></div>
+      <div class="resumo-card"><div class="rc-label">Faturamento total</div><div class="rc-valor">R$&nbsp;${totalGeral.toFixed(2).replace('.',',')}<span class="rc-icon">💵</span></div></div>
+      <div class="resumo-card"><div class="rc-label">Ticket médio</div><div class="rc-valor">R$&nbsp;${ticket.toFixed(2).replace('.',',')}<span class="rc-icon">🎯</span></div></div>
+    `;
+
+    // Ranking itens
+    const cont = {};
+    pedidos.forEach(p => p.itens.forEach(i => {
+      cont[i.nome] = (cont[i.nome] || 0) + i.qtd;
+    }));
+    const ranking = Object.entries(cont).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    const maxR = ranking[0]?.[1] || 1;
+    document.getElementById('ranking-itens').innerHTML = ranking.length
+      ? ranking.map(([nome, qtd]) => `
+          <div class="bar-item">
+            <div class="bar-label"><span>${nome}</span><strong>${qtd} un.</strong></div>
+            <div class="bar-track"><div class="bar-fill" style="width:${(qtd/maxR*100).toFixed(0)}%"></div></div>
+          </div>
+        `).join('')
+      : '<p style="color:var(--cinza);font-size:.85rem">Sem dados ainda.</p>';
+
+    // Pagamentos
+    const pix = pedidos.filter(p => p.pagamento === 'pix').length;
+    const cartao = pedidos.filter(p => p.pagamento === 'cartao').length;
+    const tot = pix + cartao || 1;
+    document.getElementById('ranking-pgto').innerHTML = `
+      <div class="bar-item">
+        <div class="bar-label"><span>📱 Pix</span><strong>${pix} pedidos</strong></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${(pix/tot*100).toFixed(0)}%;background:#22c55e"></div></div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-label"><span>💳 Cartão</span><strong>${cartao} pedidos</strong></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${(cartao/tot*100).toFixed(0)}%;background:#3b82f6"></div></div>
+      </div>
+    `;
+
+    // Semana
+    const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    const hoje = new Date(); hoje.setHours(0,0,0,0);
+    const semana = Array.from({length:7}, (_,i) => {
+      const d = new Date(hoje); d.setDate(hoje.getDate() - 6 + i);
+      const count = pedidos.filter(p => {
+        const pd = new Date(p.data); pd.setHours(0,0,0,0);
+        return pd.getTime() === d.getTime();
+      }).length;
+      return { label: dias[d.getDay()], count, ehHoje: i === 6 };
+    });
+    const maxS = Math.max(...semana.map(d=>d.count), 1);
+    document.getElementById('semana-grid').innerHTML = semana.map(d => `
+      <div class="dia-box">
+        <div class="dia-nome">${d.label}</div>
+        <div class="dia-val ${d.ehHoje?'destaque':''}">${d.count}</div>
+      </div>
+    `).join('');
+  }
+
+  // CONFIG
+  async function salvarConfig() {
+    const body = {
+      nome_banca:   document.getElementById('cfg-nome').value,
+      chave_pix:    document.getElementById('cfg-pix').value,
+      taxa_entrega: parseFloat(document.getElementById('cfg-taxa').value),
+      whatsapp:     document.getElementById('cfg-wpp').value,
+    };
+    try {
+      const r = await fetch(`${API_URL}/api/config`, {
+        method: 'PUT', headers: {'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},
+        body: JSON.stringify(body)
+      });
+      const data = await r.json();
+      if (r.ok) alert('✅ Configurações salvas!');
+      else alert(data.erro || 'Erro ao salvar.');
+    } catch { alert('Erro de conexão.'); }
+  }
+
+  async function alterarSenha() {
+    const atual = document.getElementById('cfg-senha-atual').value;
+    const nova  = document.getElementById('cfg-senha-nova').value;
+    const conf  = document.getElementById('cfg-senha-conf').value;
+    const msg   = document.getElementById('cfg-msg');
+    if (nova !== conf) { msg.style.color='var(--rosa)'; msg.textContent='As senhas não conferem.'; return; }
+    try {
+      const r = await fetch(`${API_URL}/api/auth/trocar-senha`, {
+        method: 'POST', headers: {'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},
+        body: JSON.stringify({ senha_atual: atual, nova_senha: nova })
+      });
+      const data = await r.json();
+      if (r.ok) {
+        msg.style.color='var(--verde)'; msg.textContent='Senha alterada com sucesso! ✅';
+        document.getElementById('cfg-senha-atual').value='';
+        document.getElementById('cfg-senha-nova').value='';
+        document.getElementById('cfg-senha-conf').value='';
+      } else { msg.style.color='var(--rosa)'; msg.textContent=data.erro||'Erro ao alterar senha.'; }
+    } catch { msg.style.color='var(--rosa)'; msg.textContent='Erro de conexão.'; }
+  }
+
+  // Auto-atualizar a cada 30s
+  setInterval(() => {
+    if (document.getElementById('app').classList.contains('visivel')) {
+      carregarPedidos();
+    }
+  }, 30000);
+</script>
+</body>
+</html>
