@@ -47,9 +47,13 @@ app.get('/api/ping', (_req, res) => res.json({ ok: true, ts: new Date() }));
 app.use('/api/pedidos', autenticar, pedidosRouter);
 app.use('/api/config',  autenticar, configRouter);
 
+// ── Página da loja ───────────────────────────────────────────────
+app.get('/', (req, res) => {
+  res.sendFile(join(__dirname, 'public', 'Loja.html'));
+});
+
 // ── 404 ──────────────────────────────────────────────────────────
 app.use((_req, res) => res.status(404).json({ erro: 'Rota não encontrada' }));
-
 // ── Inicialização ────────────────────────────────────────────────
 await initDB();
 
